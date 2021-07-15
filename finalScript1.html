@@ -1,0 +1,162 @@
+<html>
+    <style type='text/css'>
+    .embeddedServiceHelpButton .helpButton .uiButton {
+        background-color: #4D4D4D;
+        font-family: "Salesforce Sans", sans-serif;
+    }
+    .embeddedServiceHelpButton .helpButton .uiButton:focus {
+        outline: 1px solid #4D4D4D;
+    }
+    @font-face {
+        font-family: 'Salesforce Sans';
+        src: url('https://c1.sfdcstatic.com/etc/clientlibs/sfdc-aem-master/clientlibs_base/fonts/SalesforceSans-Regular.woff') format('woff'),
+        url('https://c1.sfdcstatic.com/etc/clientlibs/sfdc-aem-master/clientlibs_base/fonts/SalesforceSans-Regular.ttf') format('truetype');
+    }
+</style>
+
+<script type='text/javascript' src='https://service.force.com/embeddedservice/5.0/esw.min.js'></script>
+<script type='text/javascript'>
+    /*
+    function chattype() {
+               // window.top.location.href ='https://lrp1qa1-thomsonreuterss2elatam.cs17.force.com/liveagent2/?chattype='+urlpropertyname; 
+            return {!$CurrentPage.parameters.chattype};
+                 
+    }
+    */
+    
+    var initESW = function(gslbBaseURL) {
+        var url= new URL(location);
+        //var segment = 'Gov';        
+        var segment =url.searchParams.get("segment");
+        console.log('segment----'+segment);
+        
+        embedded_svc.settings.displayHelpButton = true; //Or false
+        embedded_svc.settings.language = ''; //For example, enter 'en' or 'en-US'
+
+        //embedded_svc.settings.defaultMinimizedText = '...'; //(Defaults to Chat with an Expert)
+        //embedded_svc.settings.disabledMinimizedText = '...'; //(Defaults to Agent Offline)
+
+        //embedded_svc.settings.loadingText = ''; //(Defaults to Loading)
+        //embedded_svc.settings.storageDomain = 'yourdomain.com'; //(Sets the domain for your deployment so that visitors can navigate subdomains during a chat session)
+        
+        
+        embedded_svc.settings.extraPrechatFormDetails = [
+                {  
+                    "label":"Segment",
+                    "value": segment,
+                    "transcriptFields":[ "Segment__c" ],
+                    "displayToAgent":true
+                },{
+                    "label":"First Name",
+                    "value": 'Himanshu',
+                    "transcriptFields":[ "Ecom_First_Name__c" ],
+                    "displayToAgent":true
+                
+                },{
+                    "label":"Last Name",
+                    "value": 'Sharma',
+                    "transcriptFields":[ "Ecom_Last_Name__c" ],
+                    "displayToAgent":true
+                
+                },{
+                    "label":"Email",
+                    "value": 'himanshu.sharma@thomsonreuters.com',
+                    "transcriptFields":[ "Ecom_Email__c" ],
+                    "displayToAgent":true
+                
+                },{
+                    "label":"State",
+                    "value": 'AL',
+                    "transcriptFields":[ "Ecom_State__c" ],
+                    "displayToAgent":true
+                
+                },{
+                    "label":"Opportunity",
+                    "value": '0064O00000liTpFQAU',
+                    "transcriptFields":[ "OpportunityId__c" ],
+                    "displayToAgent":true
+                
+                },{
+                    "label":"Account SSD",
+                    "value": 'a9d1B000000pL6NQAU',
+                    "transcriptFields":[ "AccountId__c" ],
+                    "displayToAgent":true
+                
+                }
+
+        ];
+        
+        // Settings for Chat
+        embedded_svc.settings.directToButtonRouting = function(prechatFormData){
+            console.log('segmentvalue----'+segment);
+             if(segment == 'Findlaw'){
+                 return "5731B000000k9bN"
+             }else if(segment == 'Corp'){
+                 console.log('inCorp');
+                 return "5731B000000blJd"
+             }else if(segment == 'Gov'){
+                 return "5734O0000004HW1"
+             }else if(segment == 'SLF'){
+                 return "5731B0000000TQC" 
+             }
+        }
+        
+        //embedded_svc.settings.directToButtonRouting = function(prechatFormData) {
+            // Dynamically changes the button ID based on what the visitor enters in the pre-chat form.
+            // Returns a valid button ID.
+        //};
+        //embedded_svc.settings.prepopulatedPrechatFields = {}; //Sets the auto-population of pre-chat form fields
+        //embedded_svc.settings.fallbackRouting = []; //An array of button IDs, user IDs, or userId_buttonId
+        //embedded_svc.settings.offlineSupportMinimizedText = '...'; //(Defaults to Contact Us)
+
+
+        embedded_svc.settings.enabledFeatures = ['LiveAgent'];
+        embedded_svc.settings.entryFeature = 'LiveAgent';
+        var chatButtonId = '';
+        var chatDeploymentId = '';
+        
+         if(segment == 'Findlaw'){
+             chatButtonId = '5731B000000k9bN';
+             chatDeploymentId = '5721B000000k9bw';
+         }else if(segment == 'Corp'){
+             console.log('just before init');
+             chatButtonId = '5731B000000blJd';
+             chatDeploymentId = '5721B000000XZBA';
+         }else if(segment == 'Gov'){
+            chatButtonId = '5734O0000004HW1';
+             chatDeploymentId = '5724O0000004GnN';
+         }else if(segment == 'SLF'){
+             chatButtonId = '5731B0000000TQC';
+             chatDeploymentId = '5721B0000000T32';
+         }
+
+        embedded_svc.init(
+            'https://thomsonreutersglis2e--stream15.my.salesforce.com',
+            'https://stream15-thomsonreuterss2elatam.cs167.force.com',
+            gslbBaseURL,
+            '00D6u0000008aJQ',
+            'CXD_Generic_ChatSnapIn_SL',
+            {
+               
+                baseLiveAgentContentURL: 'https://c.la4-c1cs-ia5.salesforceliveagent.com/content',
+                deploymentId: chatDeploymentId,
+                buttonId: chatButtonId,
+                baseLiveAgentURL: 'https://d.la4-c1cs-ia5.salesforceliveagent.com/chat',
+                eswLiveAgentDevName: 'EmbeddedServiceLiveAgent_Parent04I1B0000004C9xUAE_1696a8d594f',
+                isOfflineSupportEnabled: false
+            }
+        );
+    };
+
+    if (!window.embedded_svc) {
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://thomsonreutersglis2e--stream15.my.salesforce.com/embeddedservice/5.0/esw.min.js');
+        s.onload = function() {
+            initESW(null);
+        };
+        document.body.appendChild(s);
+    } else {
+        initESW('https://service.force.com');
+    }
+</script>
+</html>
